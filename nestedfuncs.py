@@ -156,6 +156,8 @@ def addmessages(func):
 def greet_decorators():
     print("hello decorators")
 
+#==STEP : 10==============================================
+# advanced decorators
 def execution_time(func):
     def _clock_it():
         # start clock
@@ -170,15 +172,52 @@ def execution_time(func):
     # TypeError: 'NoneType' object is not callable
     return _clock_it
 
-def this_func_is_not_doing_anything_yet():
-    # but it has potential!
-    pass
+def debug(func):
+    def _debug(*args, **kwargs):
+        result = func(*args, **kwargs)
+        print(f"{func.__name__}(args: {args}, kwargs: {kwargs}) -> {result}")
+        return result
+    return _debug
 
+# https://stackoverflow.com/questions/5929107/decorators-with-parameters
+# def decorator_factory(argument):
+#     def decorator(function):
+#         def wrapper(*args, **kwargs):
+#             funny_stuff()
+#             something_with_argument(argument)
+#             result = function(*args, **kwargs)
+#             more_funny_stuff()
+#             return result
+#         return wrapper
+#     return decorator
+def trace(tracefile):
+    def trace_decorator(func):
+        def wrapper(*args, **kwargs):
+            # execute function and get result
+            result = func(*args, **kwargs)
+            # write to a trace file
+            file = tracefile
+            f = open(file, "a")
+            f.write(f"{func.__name__}(args: {args}, kwargs: {kwargs}) -> {result}\n")
+            f.close()
+            # return result
+            return result
+        return wrapper
+    return trace_decorator
+
+# use decorators
 @execution_time
 def time_me_i_sleep_for_2_seconds():
     print("going to nap for 2 seconds")
     time.sleep(2)
     print("good nap!")
+
+# https://www.geeksforgeeks.org/decorators-with-parameters-in-python/
+@debug
+@trace(tracefile = "trace.log")
+@trace(tracefile = "trace2.log")
+def add(x,y):
+    return x + y
 
 # execution_time(time_me_i_sleep_for_2_seconds)
     
@@ -216,6 +255,7 @@ def main():
     # # decorators
     # greet_decorators()
     # time_me_i_sleep_for_2_seconds()
+    add(2,3)
 #================================================
 # let's start
 main()
@@ -225,3 +265,4 @@ main()
 # https://realpython.com/inner-functions-what-are-they-good-for/#retaining-state-with-inner-functions-closures
 # https://realpython.com/python-timer/
 # https://realpython.com/inner-functions-what-are-they-good-for/#adding-behavior-with-inner-functions-decorators
+# https://www.geeksforgeeks.org/decorators-with-parameters-in-python/
