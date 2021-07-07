@@ -31,7 +31,8 @@ def s4_greetings(username):
 
     when_we_leave();   
 #==STEP : 5==============================================
-# can we return inner functions, after all python funcs are first class
+# can we return inner functions, 
+# after all python funcs are first class
 # ok, let us return one function
 def s5_greetings(username):
     def when_we_meet():
@@ -39,7 +40,7 @@ def s5_greetings(username):
     def when_we_leave():
         print("bye " + username)
 
-    return when_we_leave   
+    return when_we_meet   
     # how do we handle two inner functions
 #==STEP : 6==============================================
 # can we return more than one inner functions, 
@@ -68,6 +69,9 @@ def s7_greetings(lang, username):
     elif lang == "spanish": 
         meet = "hola "
         leave = "adios " 
+    elif lang == "hawaian":
+        meet = "aloha "
+        leave = "aloha "
     
     
     def when_we_meet():
@@ -81,7 +85,8 @@ def s7_greetings(lang, username):
         }   
 #==STEP : 8==============================================
 # maybe build a common day to day usage example
-# lecture rooms with digital doors that provide us with no of people inside
+# lecture rooms with digital doors that provide 
+# us with no of people inside
 def lecture_room():
 
     people_count = 0;
@@ -102,7 +107,11 @@ def lecture_room():
         return people_count
 
     def empty_the_room():
-        people_count = 0;
+        # achtung: be careful
+        # make sure you don't end up modifying
+        # local variables in the function
+        nonlocal people_count
+        people_count = 0
 
     return {
         "enter": enter,
@@ -116,7 +125,7 @@ def test_lecture_rooms():
     rm_201 = lecture_room()
     rm_202 = lecture_room()
 
-    rm_201["enter"](3)
+    rm_201["enter"](30)
     rm_202["enter"](10)
 
     rm_201["leave"](1)
@@ -124,6 +133,9 @@ def test_lecture_rooms():
 
     print(rm_201["occupancy"]()) # 3 - 1 = 2
     print(rm_202["occupancy"]()) # 10 - 6 = 4
+
+    rm_201["empty_the_room"]()
+    print(rm_201["occupancy"]()) # should be 0
 
 #==STEP : 9==============================================
 # decorators, call before and after
@@ -158,39 +170,52 @@ def execution_time(func):
     # TypeError: 'NoneType' object is not callable
     return _clock_it
 
+def this_func_is_not_doing_anything_yet():
+    # but it has potential!
+    pass
+
 @execution_time
 def time_me_i_sleep_for_2_seconds():
     print("going to nap for 2 seconds")
     time.sleep(2)
     print("good nap!")
+
+# execution_time(time_me_i_sleep_for_2_seconds)
     
 
 #================================================
 # main entry point
 def main():
-    print("hello python!")
-    s1_outer_fn_1()
-    # ok, how do we get to execute inner fn
-    s2_outer_fn_2()
-    # write some sensible code, not foos and bars
-    s3_greetings("jay")  
-    s4_greetings("shailesh")
-    # return inner functions 
-    s5_g = s5_greetings("duong")
-    s5_g()
-    # return more than one
-    s6_d = s6_greetings("vincent")
-    s6_d["meet"]()
-    s6_d["leave"]()
-    # different languages
-    s7_d = s7_greetings("spanish", "lejing")
-    s7_d["meet"]()
-    s7_d["leave"]()
-    # lecture rooms
-    test_lecture_rooms()
-    # decorators
-    greet_decorators()
-    time_me_i_sleep_for_2_seconds()
+    # print("hello python!")
+    # s1_outer_fn_1()
+    # # ok, how do we get to execute inner fn
+    # s2_outer_fn_2()
+    # # write some sensible code, not foos and bars
+    # s3_greetings("jay")  
+    # s4_greetings("shailesh")
+    # # return inner functions
+    # s5_g = s5_greetings("duong")
+    # s5_g()
+    # # return more than one
+    # s6_d = s6_greetings("vincent")
+    # at this point s6_greeting should not be on stack
+    # then how come the parameter 'vincent' 
+    # is still accessible????
+    # s6_d["meet"]() # hello vincent
+    # s6_d["leave"]() # bye vincent
+    # # different languages
+    # two separate invocations
+    # s7_d = s7_greetings("spanish", "lejing")
+    # s7_d["meet"]()
+    # s7_d["leave"]()
+    # s7_d1 = s7_greetings("hawaian", "ife")
+    # s7_d1["meet"]()
+    # s7_d1["leave"]()
+    # # lecture rooms
+    # test_lecture_rooms()
+    # # decorators
+    # greet_decorators()
+    # time_me_i_sleep_for_2_seconds()
 #================================================
 # let's start
 main()
@@ -199,3 +224,4 @@ main()
 # good reads
 # https://realpython.com/inner-functions-what-are-they-good-for/#retaining-state-with-inner-functions-closures
 # https://realpython.com/python-timer/
+# https://realpython.com/inner-functions-what-are-they-good-for/#adding-behavior-with-inner-functions-decorators
